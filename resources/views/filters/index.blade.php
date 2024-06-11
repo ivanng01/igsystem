@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{__('Student Report')}}
+            {{__('All Student Report')}}
         </h2>
     </x-slot>
     
@@ -10,66 +10,61 @@
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 lg:p-8">
 
             <table class="table-auto w-full">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-2 text-gray-900 text-center">Fecha</th>
-                                <th class="px-4 py-2 text-gray-900 text-center">Asistio</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-gray-900 text-center">ID</th>
+                        <th class="px-4 py-2 text-gray-900 text-center">Surname and Name</th>
+                        <th class="px-4 py-2 text-gray-900 text-center">Course</th>
+                        <th class="px-4 py-2 text-gray-900 text-center">Porcentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+       
 
-                        <strong>Student: {{$student->name}} {{$student->surname}}</strong>
-                        @foreach($assistances as $assistance)
-                            <tr>         
-                                <td class="border px-4 py-2 text-gray-900 text-center">{{ $assistance->date }}</td>
-                                <td class="border px-4 py-2 text-gray-900 text-center">
-                                    @if($assistance->attended == 1)
-                                        Sí
-                                    @else
-                                        No
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>     
+                @foreach ($assistances as $assistance)
+                @php
+                    $percentage = $assistance->total_assistances > 0 ? ($assistance->attended_assistances / $assistance->total_assistances) * 100 : 0;
+                @endphp
+                <tr>
+                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $assistance->student_id }}</td>
+                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $assistance->student_surname }} {{ $assistance->student_name }}</td>
+                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $assistance->course_name }}</td>
+                    <td class="border px-4 py-2 text-center {{ $percentage < 70 ? 'text-red-500' : 'text-gray-900' }}">{{ number_format($percentage, 2) }}%</td>
+                </tr>
+                @endforeach
+
+                </tbody>
             </table>
 
-
-            <table class="table-auto w-full">
-                        <th class="px-4 py-2 text-gray-900 text-center">Results</th>
-                            <tr>
-                                <td class="border px-4 py-2 text-gray-900 text-center">Si</td>
-                                <td class="border px-4 py-2 text-gray-900 text-center">No</td>
-                                <td class="border px-4 py-2 text-gray-900 text-center">Asistencia</td>
-                            </tr>
-                        <tbody>
-                            <tr>         
-                                <td class="border px-4 py-2 text-gray-900 text-center">{{$yes}}</td>
-                                <td class="border px-4 py-2 text-gray-900 text-center">{{$no}}</td>
-                                <td class="border px-4 py-2 text-gray-900 text-center">{{$porc}} %</td>
-                            </tr>
-                        </tbody>     
-            </table>
+            <br>
+            <strong>Status Disable</strong>
+            <br>
+                <table class="table-auto w-full">
+                    <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-gray-900 text-center">ID</th>
+                        <th class="px-4 py-2 text-gray-900 text-center">Surname and Name</th>
+                        <th class="px-4 py-2 text-gray-900 text-center">Course</th>
+                        <th class="px-4 py-2 text-gray-900 text-center">Status</th>
                         
-            <table class="table-auto w-full">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-2 text-gray-900 text-center">Fecha</th>
-                                <th class="px-4 py-2 text-gray-900 text-center">Obs</th>
-                        </thead>
-                            
-                        <tbody>
-                         @foreach ($observations as $observation)
-                                <td class="border px-4 py-2 text-gray-900 text-center">{{ $observation->created_at }}</td>
-                                <td class="border px-4 py-2 text-gray-900 text-center">{{ $observation->obs }}</td>
-                            </tr>
+                    </tr>    
+                    </thead>
+                    <tbody>
+                        <tr>
+                        @foreach ($coursesAndStudents as $record)
+                            <td class="border px-4 py-2 text-gray-900 text-center">{{ $record->student_id }} 
+                            <td class="border px-4 py-2 text-gray-900 text-center">{{ $record->student_surname }} {{ $record->student_name }} </td>
+                            <td class="border px-4 py-2 text-gray-900 text-center">{{ $record->course_name }} </td>
+                            <td class="border px-4 py-2 text-gray-900 text-center">{{ $record->student_status }} </td>
+                        </tr>
                         @endforeach
-                        </tbody>
-            </table>
+                    </tbody>
+                </table>
+
                 <br>
-            <div class="mb-6">
-                <a href="{{route('students.index') }}" class="text-white bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center float-right sm:w-auto"><i class="bi bi-house"></i> Home</a>
-            </div>
+                <div class="mb-6">
+                    <a href="{{route('students.index') }}" class="text-white bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center float-right sm:w-auto"><i class="bi bi-house"></i> Home</a>
+                </div>
 
             </div>
         </div>

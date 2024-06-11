@@ -12,30 +12,24 @@ class ObservationController extends Controller
     {
         {
             $searchPerformed = false;
-            $observations = Student::with('subject', 'course', 'assistance', 'observation');
+            $post = Student::with('subject', 'course', 'assistance', 'observation');
     
-            // if ($request->input('search')) {
-            //     $searchPerformed = true;
-            //     $observations->where('name', 'LIKE', '%' . $request->input('search') . '%');
-            // }
-
             //Filtrar por apellido y nombre
             $busqueda = $request->input('search');
             if ($busqueda) {
                 $searchPerformed = true;
-                $observations = Student::whereRaw("CONCAT(surname, ' ', name) LIKE ?", ["%{$busqueda}%"]);
+                $post = Student::whereRaw("CONCAT(surname, ' ', name) LIKE ?", ["%{$busqueda}%"]);
             } 
-
     
             if ($request->input('search2')) {
                 $searchPerformed = true;
-                $observations->whereHas('course', function ($query) use ($request) {
+                $post->whereHas('course', function ($query) use ($request) {
                     $query->where('name', 'LIKE', '%' . $request->input('search2') . '%');
                 });
             }
     
-            $observations = $observations->get();
-            return view('observations.index', compact('observations','searchPerformed'));
+            $post = $post->get();
+            return view('observations.index', compact('post','searchPerformed'));
         }
 
     }

@@ -9,10 +9,8 @@ class CourseController extends Controller
 {
     public function index()
     {
-        //$request->has('name');
         $course = Course::all();
         return view('courses.index', compact('course'));
-        //return $post;
     }
 
     /**
@@ -21,7 +19,6 @@ class CourseController extends Controller
     public function create()
     {
         return view('courses.create'); 
-        //return redirect()->route('courses.index')->with('success', 'Course created successfully.');
     }
 
     /**
@@ -29,15 +26,15 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-          // Validar los datos del formulario
-          $request->validate([
+        // Valido los datos del formulario
+        $request->validate([
             'name' => 'required|string|min:1|max:255',
         ]);
 
-         // Crear un nuevo curso usando el método `create` del modelo
+        // Creo un nuevo curso usando el método `create` del modelo
         Course::create($request->all());
 
-        // Redireccionar a la vista de listado de curso
+        // Redirecciono a la vista el listado de curso
         return redirect()->route('courses.index');  
     }
 
@@ -63,21 +60,20 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validar los datos del formulario
+        // Valido los datos del formulario
         $request->validate([
             'name' => 'required|string|min:1|max:255',
         ]);
 
-        // Buscar el curso por su ID
+        // Busco el curso por su ID
         $course = Course::findOrFail($id);
 
-        // Actualizar los datos del curso
+        // Actualizo los datos del curso
         $course->update($request->all());
 
-        // Redireccionar a la vista de listado de cursos
+        // Redirecciono a la vista de listado de cursos
         return redirect()->route('courses.index');
-        //return redirect()->route('courses.index')->with('success', 'Course updated successfully');
-    }
+        }
 
     /**
      * Remove the specified resource from storage.

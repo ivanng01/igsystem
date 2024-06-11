@@ -24,7 +24,6 @@ Route::get('/', function () {
 });
 
 
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -37,6 +36,10 @@ Route::middleware([
     Route::resource('subjects',SubjectController::class);
     Route::resource('courses',CourseController::class);
     Route::resource('assistances',AssistanceController::class);
+
+    Route::get('/assistances/{student}/edit', [AssistanceController::class, 'edit'])->name('assistances.edit');
+    Route::put('/assistances/{student}', [AssistanceController::class, 'update'])->name('assistances.update');
+
     Route::resource('filters',FilterController::class);
     Route::resource('observations',ObservationController::class);
     Route::get('/observations/create/{student_id}', [ObservationController::class, 'create'])->name('observations.create');

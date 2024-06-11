@@ -10,10 +10,8 @@ class SubjectController extends Controller
 {
     public function index()
     {
-        //$request->has('name');
         $subject = Subject::all();
         return view('subjects.index', compact('subject'));
-        //return $post;
     }
 
     /**
@@ -29,15 +27,15 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-          // Validar los datos del formulario
-          $request->validate([
+        // Valido los datos del formulario
+        $request->validate([
             'name' => 'required|string|min:5|max:255',
         ]);
 
-         // Crear una nueva materia usando el método `create` del modelo
+        // Creo una nueva materia usando el método 'create' del modelo
         Subject::create($request->all());
 
-        // Redireccionar a la vista de listado de estudiantes
+        // Redirecciono a la vista el listado de estudiantes
         return redirect()->route('subjects.index');  
     }
 
@@ -63,18 +61,18 @@ class SubjectController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validar los datos del formulario
+        // Valido los datos del formulario
         $request->validate([
             'name' => 'required|string|min:5|max:255',
         ]);
 
-        // Buscar la materia por su ID
+        // Busco la materia por su ID
         $subject = Subject::findOrFail($id);
 
-        // Actualizar los datos de las materias
+        // Actualizo los datos de las materias
         $subject->update($request->all());
 
-        // Redireccionar a la vista de listado de materias
+        // Redirecciono a la vista el listado de materias
         return redirect()->route('subjects.index');
     }
 

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Student') }}
+            {{ __('Edit Assistance') }}
         </h2>
     </x-slot>
 
@@ -9,55 +9,53 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-3 lg:p-4">
 
-
-                @if(count($errors))
-                <ul>
-                    @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
                 @endif
-                <form method="POST" action="{{ route('students.update', $student->id) }}" class="max-w-sm mx-auto">
-                    @csrf
-                    @method('PUT')
 
-                    <div class="mb-3">
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Name</label>
-                        <input type="text" name="name" id="name" value="{{ old('name', $student->name) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                    </div>
+                <label for="assistances" class="block mb-2 text-lg font-medium text-gray-900">
+                {{ $student->surname }} {{ $student->name }}</label>
+                <br>
+                
+                
+                <form method="POST" action="{{ route('assistances.update', $student->id) }}">
+                @csrf
+                @method('PUT')
 
-                    <div class="mb-3">
-                        <label for="surname" class="block mb-2 text-sm font-medium text-gray-900">Surname</label>
-                        <input type="text" name="surname" id="surname" value="{{ old('surname', $student->surname) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="course" class="block mb-2 text-sm font-medium text-gray-900">Course</label>
-                        <select class="form-select" name="select_course[]">
-                            @foreach($course as $cour)
-                                <option value="{{$cour->id}}"
-                                {{ in_array($cour->id, $student->course->pluck('id')->toArray()) ? 'selected' : '' }}>
-                                {{ $cour->name }}
-                                </option> 
+                <div class="overflow-x-auto flex justify-center">
+                    <table class="table-auto" style="width: 35%;">
+                        <thead>
+                            <tr>
+                                <th class="text-left p-2">Date and Time</th>
+                                <th class="text-left p-2">Assistance (Yes/No)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($assistances as $index => $assistance)
+                            <tr>
+                                <td class="p-2 border border-gray-300">
+                                    <label for="date-{{ $index }}" class="sr-only"></label>
+                                    <input type="datetime-local" name="assistances[{{ $index }}][date]" id="date-{{ $index }}" value="{{ \Carbon\Carbon::parse($assistance->date)->format('Y-m-d\TH:i') }}" required class="w-full">
+                                </td>
+                                <td class="p-2 border border-gray-300 text-center">
+                                    <label for="attended-{{ $index }}" class="sr-only"></label>
+                                    <input class="form-check-input" type="checkbox" name="assistances[{{ $index }}][attended]" id="attended-{{ $index }}" value="1" {{ $assistance->attended ? 'checked' : '' }}>
+                                    <input type="hidden" name="assistances[{{ $index }}][id]" value="{{ $assistance->id }}">
+                                </td>
+                            </tr>
                             @endforeach
-                        </select>
-                    </div>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="subject" class="block mb-2 text-sm font-medium text-gray-900">Subject</label>
-                        <select name="select_subject[]">
-                            @foreach($subject as $sub)
-                                <option value="{{$sub->id}}"
-                                {{ in_array($sub->id, $student->subject->pluck('id')->toArray()) ? 'selected' : '' }}>
-                                {{ $sub->name }}
-                                </option> 
-                            @endforeach
-                        </select>
-                    </div>
-                    
+                <div class="mt-4 flex justify-center">
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Update</button>
-                    <a href="{{ route('students.index') }}" class="text-white bg-slate-700 hover:bg-slate-800 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Cancel</a>
-                </form>
+                    <a href="{{route('assistances.index')}}" class="ml-2 text-white bg-slate-700 hover:bg-slate-800 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Cancel</a>
+                </div>
+                </form>    
+
 
             </div>
         </div>

@@ -12,31 +12,27 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        //dd($request);
-        //$post = Student::with('subject');
-        
+        $searchPerformed = false;
         $post = Student::with('subject','course','assistance','observation');
-        
-        // if($request->input('search')) {
-        //     $post->where('name', 'LIKE' , '%'.$request->input('search').'%');
-        // }
 
-        //Filtrar por apellido y nombre
+        //Filtro por apellido y nombre
         $busqueda = $request->input('search');
         if ($busqueda) {
+            $searchPerformed = true;
             $post = Student::whereRaw("CONCAT(surname, ' ', name) LIKE ?", ["%{$busqueda}%"]);
         } 
 
         if($request->input('search2')) {
+            $searchPerformed = true;
             $post->whereHas('course', function($query) use ($request) {
                 $query->where('name', 'LIKE' , '%'.$request->input('search2').'%');
             });
         }
-        
 
+        // Obtengo los resultados
         $post = $post->get();
         
-        return view('students.index', compact('post'));
+        return view('students.index', compact('post','searchPerformed'));
     }
 
     /**
@@ -48,9 +44,8 @@ class StudentController extends Controller
         $courses = Course::select('id','name')->get();
         $assistances = Assistance::select('id')->get();
         $observations = Observation::select('id')->get();
-        //dd($subjects);
-        //return $subjects;
         return view('students.create',compact('subjects','courses','assistances','observations'));
+        
     }
 
     /**
@@ -58,7 +53,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
+        // Valido los datos del formulario
         $validated = $request->validate([
             'name' => 'required|string|min:2|max:255',
             'surname' => 'required|string|min:2|max:255',
@@ -67,25 +62,27 @@ class StudentController extends Controller
         ]);
         
 
-        // Añadir el valor por defecto de 'status'
+        // Añado el valor por defecto de 'status'
         $validated['status'] = 1;
 
-        // Crear el estudiante con los datos validados
+        // Creo el estudiante con los datos validados
         $student = Student::create($validated);
         
-        // Relacionar el estudiante con los cursos seleccionados
+        // Relaciono el estudiante con los cursos seleccionados
         if ($request->has('select_course')) {
             //$student->subject()->attach($request->input('select_subject'));
             $student->course()->attach($request->input('select_course'));
         }
 
-        // Relacionar el estudiante con las materias seleccionadas
+        // Relaciono el estudiante con las materias seleccionadas
         if ($request->has('select_subject')) {
             //$student->subject()->attach($request->input('select_subject'));
             $student->subject()->attach($request->input('select_subject'));
         }
 
-        return redirect()->route('students.index');
+        //return redirect()->route('students.index');
+        
+        return redirect()->route('students.create')->with('success', 'Alumno creado correctamente.');
     }
 
     /**
@@ -94,9 +91,8 @@ class StudentController extends Controller
     
     public function show($id)
     {
-        // Obtener el estudiante por su ID junto con sus observaciones
+        // Obtengo el estudiante por su ID junto con sus observaciones
         $student = Student::with('observations')->findOrFail($id);
-
         return view('students.show', compact('student'));
     }
     
@@ -118,7 +114,7 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        // Validar los datos del formulario
+        // Valido los datos del formulario
         $request->validate([
             'name' => 'required|string|min:2|max:255',
             'surname' => 'required|string|min:2|max:255',
@@ -126,19 +122,19 @@ class StudentController extends Controller
             'select_subject' => 'array',
         ]);
 
-        // Buscar el estudiante por su ID
+        // Busco el estudiante por su ID
         //$student = Student::findOrFail($id);
 
-        // Actualizar los datos del estudiante
+        // Actualizo los datos del estudiante
         $student->update($request->all());
 
-        // Sincronizar los cursos relacionados con los cursos seleccionados
+        // Relaciono el estudiante con las materias seleccionadas
         $student->course()->sync($request->input('select_course'));
 
-        // Sincronizar los cursos relacionados con las materias seleccionadas
+        // Relaciono el estudiante con las materias seleccionadas
         $student->subject()->sync($request->input('select_subject'));
 
-        // Redireccionar a la vista de listado de estudiantes
+        // Redirecciono a la vista el listado de estudiantes
         return redirect()->route('students.index');
     }
 

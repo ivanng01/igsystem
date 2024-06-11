@@ -19,7 +19,7 @@
             @csrf
             <input type="hidden" name="student_id" value="{{ $student->id }}">
                 <div class="mb-3">
-                    <label for="obs" class="block mb-2 text-lg font-medium text-gray-900">Observación: {{ $student->name }} {{ $student->surname }}</label>
+                    <label for="obs" class="block mb-2 text-lg font-medium text-gray-900">{{ $student->name }} {{ $student->surname }}</label>
                     <input type="text" name="obs" id="obs" required class="border border-gray-300 p-2 w-full">
                     @error('obs')
                         <div style="color: red;">{{ $message }}</div>
