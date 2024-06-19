@@ -8,7 +8,20 @@
     <div class="py-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-0">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 lg:p-8">
+            <form action="{{ route('filters.index') }}" method="get">
+            @csrf
+                <x-custom-button></x-custom-button>
 
+            </form>
+            <form action="{{ route('reports.reportAsistances') }}" method="post">
+                @csrf
+                
+                <div class="w-100 text-end">
+                    <button class="text-black bg-gray-400 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-2.5 text-end ">
+                        <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+                    </button>
+                </div>
+            </form>
             <table class="table-auto w-full">
                 <thead>
                     <tr>

@@ -6,6 +6,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\AssistanceController;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\ObservationController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,4 +45,7 @@ Route::middleware([
     Route::resource('observations',ObservationController::class);
     Route::get('/observations/create/{student_id}', [ObservationController::class, 'create'])->name('observations.create');
     
+    Route::post('reportAsistances',[ReportController::class, 'reportAsistances'])->name('reports.reportAsistances');
+    Route::post('reportAlumns',[ReportController::class, 'reportAlumns'])->name('reports.reportAlumns');
+
 });

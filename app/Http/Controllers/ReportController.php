@@ -1,16 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\DB;
-use App\Models\Student;
+
 use App\Models\Assistance;
 use App\Models\Observation;
+use App\Models\Student;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
-class FilterController extends Controller
+class ReportController extends Controller
 {
-    public function index(Request $request)
-     {   
+    
+
+     /**
+     * 
+     */
+    public function reportAsistances(Request $request)
+    {
         $assistances = Assistance::select(
             'students.id as student_id',
             'students.name as student_name',
@@ -33,34 +40,23 @@ class FilterController extends Controller
         }
 
         $assistances = $assistances->get();
-
-        $coursesAndStudents = DB::select(
-                'SELECT s.id AS student_id, c.name AS course_name, s.name AS student_name, s.surname AS student_surname, s.status AS student_status
-                FROM course_student cs
-                JOIN courses c ON cs.course_id = c.id
-                JOIN students s ON cs.student_id = s.id
-                WHERE s.status = 0'
-        );
-
-        $studentCounts = DB::select(
-            'SELECT c.id AS course_id, c.name AS course_name,
-                SUM(CASE WHEN s.status = 0 THEN 1 ELSE 0 END) AS count_status_0,
-                SUM(CASE WHEN s.status = 1 THEN 1 ELSE 0 END) AS count_status_1
-            FROM course_student cs
-            JOIN courses c ON cs.course_id = c.id
-            JOIN students s ON cs.student_id = s.id
-            GROUP BY c.id, c.name'
-        );
-    
-        return view('filters.index', compact('assistances','coursesAndStudents','studentCounts'));
+        
+        // $pdf = Pdf::loadView('pdf.listStudents', ["course"=>$request->input('search2','Todos'),"assistances"=>$assistances]);
+        $pdf = Pdf::loadView('pdf.listStudents', [
+            "course" => $request->input('search2', 'Todos'),
+            "assistances" => $assistances
+        ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
+        
+        return $pdf->download('Reporte asistencias de alumnos de '.$request->input('search2').'.pdf');
     }
 
-    public function show(string $id)
+    public function reportAlumns(Request $request)
     {
-        $student = Student::findOrFail($id);
-        $observations=Observation::where('student_id', $id)
+        
+        $student = Student::findOrFail($request->input('id'));
+        $observations=Observation::where('student_id', $request->input('id'))
                     ->get();
-        $assistances = Assistance::where('student_id', $id)
+        $assistances = Assistance::where('student_id', $request->input('id'))
                     ->orderBy('date', 'desc')
                     ->get();
         //Cuento las asistencias
@@ -74,7 +70,16 @@ class FilterController extends Controller
         
         $total = $yes + $no;
         $porc = $total > 0 ? ($yes / $total) * 100 : 0;
-        return view('filters.show', compact('student','observations','assistances','yes','no','porc'));   
-    
+
+        $pdf = Pdf::loadView('pdf.student', [
+            "student" => $student,
+            "observations" => $observations,
+            "assistances" => $assistances,
+            "yes" => $yes,
+            "no" => $no,
+            "porc" => $porc,
+        ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
+        
+        return $pdf->download('Reporte de '.$student->name.' '.$student->last_name.'.pdf');
     }
 }
