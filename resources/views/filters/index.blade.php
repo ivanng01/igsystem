@@ -58,8 +58,36 @@
                             <td class="border px-4 py-2 text-gray-900 text-center">{{ $record->student_status }} </td>
                         </tr>
                         @endforeach
+                        </tr>
                     </tbody>
                 </table>
+
+                <br>
+                <strong>Student Counts by Course</strong>
+                <br>
+    <table class="table-auto w-full">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 text-gray-900 text-center">Course ID</th>
+                <th class="px-4 py-2 text-gray-900 text-center">Course Name</th>
+                <th class="px-4 py-2 text-gray-900 text-center">Count Active</th>
+                <th class="px-4 py-2 text-gray-900 text-center">Count Disabled</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            @foreach ($studentCounts as $count)
+            <tr>
+                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $count->course_id }}</td>
+                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $count->course_name }}</td>
+                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $count->count_status_1 }}</td>
+                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $count->count_status_0 }}</td>
+                    </tr>    
+            @endforeach
+            
+            
+        </tbody>
+    </table>
 
                 <br>
                 <div class="mb-6">

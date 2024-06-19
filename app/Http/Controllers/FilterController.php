@@ -36,7 +36,17 @@ class FilterController extends Controller
                 WHERE s.status = 0'
         );
 
-        return view('filters.index', compact('assistances','coursesAndStudents'));
+        $studentCounts = DB::select(
+            'SELECT c.id AS course_id, c.name AS course_name,
+                SUM(CASE WHEN s.status = 0 THEN 1 ELSE 0 END) AS count_status_0,
+                SUM(CASE WHEN s.status = 1 THEN 1 ELSE 0 END) AS count_status_1
+            FROM course_student cs
+            JOIN courses c ON cs.course_id = c.id
+            JOIN students s ON cs.student_id = s.id
+            GROUP BY c.id, c.name'
+        );
+    
+        return view('filters.index', compact('assistances','coursesAndStudents','studentCounts'));
     }
 
     public function show(string $id)
