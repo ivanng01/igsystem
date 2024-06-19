@@ -36,11 +36,11 @@ class Student extends Model
     //relacion muchos a muchos con asistencia
     public function assistance()
     {
-        return $this->belongsToMany(Assistance::class);
+        return $this->hasMany(Assistance::class);
     }
 
     public function observation()
     {
-        return $this->belongsToMany(Observation::class);
+        return $this->hasMany(Observation::class);
     }
 }

@@ -58,8 +58,10 @@
 
             </tbody>
         </table>
-
         </div>
+    </div>
+    <div class="w-100">
+        <h5 class="text-md text-gray-500 leading-tight text-center"> Reporte Generado por <b> {{ Auth::user()->name }} {{ Auth::user()->last_name }} </b> el dia {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i') }}</h5>
     </div>
 </div>
 

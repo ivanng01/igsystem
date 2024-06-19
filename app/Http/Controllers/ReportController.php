@@ -18,30 +18,28 @@ class ReportController extends Controller
      */
     public function reportAsistances(Request $request)
     {
-        $assistances = Assistance::select(
+        $assistancesQuery = Student::select(
             'students.id as student_id',
             'students.name as student_name',
             'students.surname as student_surname',
             'courses.id as course_id',
             'courses.name as course_name',
-            DB::raw('COUNT(*) as total_assistances'),
-            DB::raw('SUM(attended) as attended_assistances')
-            )
-            ->join('students', 'students.id', '=', 'assistances.student_id')
-            ->join('course_student', 'students.id', '=', 'course_student.student_id')
-            ->join('courses', 'courses.id', '=', 'course_student.course_id')
-            ->where('students.status', '=', 1) 
-            ->groupBy('students.id', 'students.name', 'students.surname', 'courses.id', 'courses.name')
-            ->orderBy('course_student.course_id');
+            DB::raw('COUNT(assistances.id) as total_assistances'),
+            DB::raw('SUM(assistances.attended) as attended_assistances')
+        )
+        ->join('course_student', 'students.id', '=', 'course_student.student_id')
+        ->join('courses', 'courses.id', '=', 'course_student.course_id')
+        ->leftJoin('assistances', 'students.id', '=', 'assistances.student_id')
+        ->where('students.status', 1)
+        ->groupBy('students.id', 'students.name', 'students.surname', 'courses.id', 'courses.name')
+        ->orderBy('course_student.course_id');
 
-        
         if ($request->has('search2') && !is_null($request->input('search2'))) {
-            $assistances->where('courses.name',$request->input('search2'));
+            $assistancesQuery->where('courses.name', $request->input('search2'));
         }
 
-        $assistances = $assistances->get();
+        $assistances = $assistancesQuery->get();
         
-        // $pdf = Pdf::loadView('pdf.listStudents', ["course"=>$request->input('search2','Todos'),"assistances"=>$assistances]);
         $pdf = Pdf::loadView('pdf.listStudents', [
             "course" => $request->input('search2', 'Todos'),
             "assistances" => $assistances
@@ -52,29 +50,26 @@ class ReportController extends Controller
 
     public function reportAlumns(Request $request)
     {
+        $studentId = $request->input('id');
         
-        $student = Student::findOrFail($request->input('id'));
-        $observations=Observation::where('student_id', $request->input('id'))
-                    ->get();
-        $assistances = Assistance::where('student_id', $request->input('id'))
-                    ->orderBy('date', 'desc')
-                    ->get();
-        //Cuento las asistencias
-        $yes = Assistance::where('student_id', $student->id)
-                    ->where('attended', 1)
-                    ->count();
-        //Cuento las inasistencias
-        $no = Assistance::where('student_id', $student->id)
-                    ->where('attended', 0)
-                    ->count();
+        $student = Student::with(['observation', 'assistance' => function($query) {
+            $query->orderBy('date', 'desc');
+        }])->findOrFail($studentId);
+
+        $assistancesStats = Assistance::where('student_id', $studentId)
+            ->selectRaw('SUM(attended = 1) as attended_count, SUM(attended = 0) as not_attended_count')
+            ->first();
+
+        $yes = $assistancesStats->attended_count;
+        $no = $assistancesStats->not_attended_count;
         
         $total = $yes + $no;
         $porc = $total > 0 ? ($yes / $total) * 100 : 0;
-
+        
         $pdf = Pdf::loadView('pdf.student', [
             "student" => $student,
-            "observations" => $observations,
-            "assistances" => $assistances,
+            "observations" => $student->observation,
+            "assistances" => $student->assistance,
             "yes" => $yes,
             "no" => $no,
             "porc" => $porc,
@@ -82,4 +77,5 @@ class ReportController extends Controller
         
         return $pdf->download('Reporte de '.$student->name.' '.$student->last_name.'.pdf');
     }
+
 }
