@@ -9,6 +9,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-0">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 lg:p-8">
 
+            @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+            @endif
+
             <div class="mb-6">
                         <a href="{{route('students.create') }}" class="text-white bg-indigo-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Create Student</a>
             </div>
@@ -23,8 +29,8 @@
                             <tr>
                                 
                                 <th class="px-4 py-2 text-gray-900 text-center">ID Student</th>
-                                <th class="px-4 py-2 text-gray-900 text-center">Name</th>
                                 <th class="px-4 py-2 text-gray-900 text-center">Surname</th>
+                                <th class="px-4 py-2 text-gray-900 text-center">Name</th>
                                 
                                 <th class="px-4 py-2 text-gray-900 text-center">Course</th>
                                 <th class="px-4 py-2 text-gray-900 text-center">Subject</th>
@@ -37,8 +43,8 @@
                                 @foreach($post as $student)
                                 <tr>                                 
                                     <td class="border px-4 py-2 text-gray-900 text-center">{{ $student->id }}</td>
-                                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $student->name }}</td>
                                     <td class="border px-4 py-2 text-gray-900 text-center">{{ $student->surname }}</td>
+                                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $student->name }}</td>
                                     
 
                                     <td class="border px-4 py-2 text-gray-900 text-center">

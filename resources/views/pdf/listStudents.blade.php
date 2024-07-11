@@ -28,7 +28,7 @@
 </style>
 <div class="py-4">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        {{__('Porcentaje Asistencias de ') }} "{{ $course; }}"
+        {{__('Porcentaje de Asistencias de ') }} "{{ $course; }}"
     </h2>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-0">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 lg:p-8">
@@ -36,7 +36,7 @@
         <table class="table-auto w-full">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 text-gray-900 text-center">Nombre y Apellido</th>
+                    <th class="px-4 py-2 text-gray-900 text-center">Apellido y Nombre</th>
                     <th class="px-4 py-2 text-gray-900 text-center">Curso</th>
                     <th class="px-4 py-2 text-gray-900 text-center">Porcentaje</th>
                 </tr>
@@ -61,7 +61,7 @@
         </div>
     </div>
     <div class="w-100">
-        <h5 class="text-md text-gray-500 leading-tight text-center"> Reporte Generado por <b> {{ Auth::user()->name }} {{ Auth::user()->last_name }} </b> el dia {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i') }}</h5>
+        <h5 class="text-md text-gray-500 leading-tight text-center"> Reporte Generado por <b> {{ Auth::user()->name }} {{ Auth::user()->last_name }} </b> el día {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i') }}</h5>
     </div>
 </div>
 

@@ -46,6 +46,7 @@ Route::middleware([
     Route::get('/observations/create/{student_id}', [ObservationController::class, 'create'])->name('observations.create');
     
     Route::post('reportAsistances',[ReportController::class, 'reportAsistances'])->name('reports.reportAsistances');
+    Route::post('reportObservations',[ReportController::class, 'reportObservations'])->name('reports.reportObservations');
     Route::post('reportAlumns',[ReportController::class, 'reportAlumns'])->name('reports.reportAlumns');
 
 });

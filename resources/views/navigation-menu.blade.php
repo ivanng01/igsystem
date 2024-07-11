@@ -172,9 +172,31 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+            <!-- <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            </x-responsive-nav-link> -->
+
+                    <x-responsive-nav-link href="{{ route('students.index') }}" :active="request()->routeIs('students.index')">
+                        {{ __('Students') }}
+                    </x-responsive-nav-link>
+                
+                    <x-responsive-nav-link href="{{ route('subjects.index') }}" :active="request()->routeIs('subjects.index')">
+                        {{ __('Subjects') }}
+                    </x-responsive-nav-link>
+                
+                    <x-responsive-nav-link href="{{ route('courses.index') }}" :active="request()->routeIs('courses.index')">
+                        {{ __('Courses') }}
+                    </x-responsive-nav-link>
+                
+                    <x-responsive-nav-link href="{{ route('assistances.index') }}" :active="request()->routeIs('assistances.index')">
+                        {{ __('Assistances') }}
+                    </x-responsive-nav-link>  
+                    
+                    <x-responsive-nav-link href="{{ route('observations.index') }}" :active="request()->routeIs('observations.index')">
+                        {{ __('Observations') }}
+                    </x-responsive-nav-link>
+
+
         </div>
 
         <!-- Responsive Settings Options -->

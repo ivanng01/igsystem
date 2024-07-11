@@ -80,7 +80,7 @@
                 </table>
                 <br>
                 
-                <h5 class="font-semibold text-xl text-gray-800 leading-tight" > Observaciones </h5>
+                <h5 class="font-semibold text-xl text-gray-800 leading-tight">Observaciones </h5>
                 <table class="table-auto w-full">
                     <thead>
                         <tr>
@@ -102,7 +102,7 @@
         </div>
         <br>
         <div class="w-100">
-            <h5 class="text-md text-gray-500 leading-tight text-center"> Reporte Generado por <b> {{ Auth::user()->name }} {{ Auth::user()->last_name }} </b> el dia {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i') }}</h5>
+            <h5 class="text-md text-gray-500 leading-tight text-center"> Reporte Generado por <b> {{ Auth::user()->name }} {{ Auth::user()->last_name }} </b> el día {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y H:i') }}</h5>
         </div>
     </div>
 </div>

@@ -20,19 +20,19 @@
             <table class="table-auto w-full">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2 text-gray-900 text-center">Fecha</th>
-                                <th class="px-4 py-2 text-gray-900 text-center">Asistio</th>
+                                <th class="px-4 py-2 text-gray-900 text-center">Date</th>
+                                <th class="px-4 py-2 text-gray-900 text-center">Attended</th>
                             </tr>
                         </thead>
                         <tbody>
 
-                        <strong>Student: {{$student->name}} {{$student->surname}}</strong>
+                        <strong>Student: {{$student->surname}} {{$student->name}}</strong>
                         @foreach($assistances as $assistance)
                             <tr>         
                                 <td class="border px-4 py-2 text-gray-900 text-center">{{ \Carbon\Carbon::parse($assistance->date)->translatedFormat('l, d F Y H:i') }}</td>
                                 <td class="border px-4 py-2 text-gray-900 text-center">
                                     @if($assistance->attended == 1)
-                                        Sí
+                                        Yes
                                     @else
                                         No
                                     @endif
@@ -46,9 +46,9 @@
             <table class="table-auto w-full">
                         <th class="px-4 py-2 text-gray-900 text-center">Results</th>
                             <tr>
-                                <td class="border px-4 py-2 text-gray-900 text-center">Si</td>
+                                <td class="border px-4 py-2 text-gray-900 text-center">Yes</td>
                                 <td class="border px-4 py-2 text-gray-900 text-center">No</td>
-                                <td class="border px-4 py-2 text-gray-900 text-center">Asistencia</td>
+                                <td class="border px-4 py-2 text-gray-900 text-center">Attendance</td>
                             </tr>
                         <tbody>
                             <tr>         
@@ -62,8 +62,8 @@
             <table class="table-auto w-full">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2 text-gray-900 text-center">Fecha</th>
-                                <th class="px-4 py-2 text-gray-900 text-center">Obs</th>
+                                <th class="px-4 py-2 text-gray-900 text-center">Date</th>
+                                <th class="px-4 py-2 text-gray-900 text-center">Observation</th>
                         </thead>
                             
                         <tbody>

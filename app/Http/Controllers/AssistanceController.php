@@ -13,26 +13,26 @@ class AssistanceController extends Controller
     public function index(Request $request)
     {
         $searchPerformed = false;
-        $post = Student::with('subject','course','assistance')
-        ->where('status', 1); // Filtro status = 1 o active
+        $post = Student::with('subject', 'course', 'assistance')
+            ->where('status', 1); // Filtro status = 1 o activo
 
-        //Filtro por apellido y nombre
+        // Filtro por apellido y nombre
         $busqueda = $request->input('search');
         if ($busqueda) {
             $searchPerformed = true;
-            $post = Student::whereRaw("CONCAT(surname, ' ', name) LIKE ?", ["%{$busqueda}%"]);
-        } 
+            $post->whereRaw("CONCAT(surname, ' ', name) LIKE ?", ["%{$busqueda}%"]);
+        }
 
-        if($request->input('search2')) {
+        // Filtro por nombre del curso
+        if ($request->input('search2')) {
             $searchPerformed = true;
-            $post->whereHas('course', function($query) use ($request) {
-                $query->where('name', 'LIKE' , '%'.$request->input('search2').'%');
+            $post->whereHas('course', function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%' . $request->input('search2') . '%');
             });
         }
-        
 
         $post = $post->get();
-        return view('assistances.index', compact('post','searchPerformed'));
+        return view('assistances.index', compact('post', 'searchPerformed'));
     }
 
     /**
@@ -43,8 +43,6 @@ class AssistanceController extends Controller
         //return view('assistances.create'); 
     }
 
-
-    //OK OK
     public function store(Request $request)
     {
         //dd($request->assistance);
@@ -124,10 +122,6 @@ class AssistanceController extends Controller
         'success' => 'Asistencias actualizadas correctamente',
     ]);
     }
-
-    
-    
-    
 }
 
 

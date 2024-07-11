@@ -48,6 +48,37 @@ class ReportController extends Controller
         return $pdf->download('Reporte asistencias de alumnos de '.$request->input('search2').'.pdf');
     }
 
+    public function reportObservations(Request $request)
+    {
+        $observationsQuery = Student::select(
+            'students.id as student_id',
+            'students.name as student_name',
+            'students.surname as student_surname',
+            'observations.id as observation_id',
+            'observations.obs as observation_obs',
+            'observations.created_at as observation_date'
+        )
+        ->leftJoin('course_student', 'students.id', '=', 'course_student.student_id')
+        ->leftJoin('courses', 'courses.id', '=', 'course_student.course_id')
+        ->leftJoin('observations', 'students.id', '=', 'observations.student_id')
+        ->orderBy('students.surname')
+        ->orderBy('students.name')
+        ->orderBy('observations.created_at');
+
+        if ($request->has('search2') && !is_null($request->input('search2'))) {
+            $observationsQuery->where('courses.name', $request->input('search2'));
+        }
+
+        $observations = $observationsQuery->get()->groupBy('student_id');
+
+        $pdf = Pdf::loadView('pdf.listObservationsStudents', [
+            "course" => $request->input('search2', 'Todos'),
+            "observations" => $observations
+        ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
+
+        return $pdf->download('Reporte observaciones de alumnos de ' . $request->input('search2', 'Todos') . '.pdf');
+    }
+
     public function reportAlumns(Request $request)
     {
         $studentId = $request->input('id');

@@ -135,7 +135,7 @@ class StudentController extends Controller
         $student->subject()->sync($request->input('select_subject'));
 
         // Redirecciono a la vista el listado de estudiantes
-        return redirect()->route('students.index');
+        return redirect()->route('students.index')->with('success', 'Edición guardada correctamente.');
     }
 
     /**
