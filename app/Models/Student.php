@@ -30,14 +30,15 @@ class Student extends Model
     //relacion muchos a muchos con cursos
     public function course()
     {
-        return $this->belongsToMany(Course::class);
+        return $this->belongsToMany(Course::class, 'course_student');
     }
 
-    //relacion muchos a muchos con asistencia
+    //relacion muchos a muchos con asistencia OK
     public function assistance()
     {
         return $this->hasMany(Assistance::class);
     }
+
 
     public function observation()
     {

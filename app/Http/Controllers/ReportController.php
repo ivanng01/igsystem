@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assistance;
-use App\Models\Observation;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -49,35 +48,44 @@ class ReportController extends Controller
     }
 
     public function reportObservations(Request $request)
-    {
-        $observationsQuery = Student::select(
-            'students.id as student_id',
-            'students.name as student_name',
-            'students.surname as student_surname',
-            'observations.id as observation_id',
-            'observations.obs as observation_obs',
-            'observations.created_at as observation_date'
-        )
-        ->leftJoin('course_student', 'students.id', '=', 'course_student.student_id')
-        ->leftJoin('courses', 'courses.id', '=', 'course_student.course_id')
-        ->leftJoin('observations', 'students.id', '=', 'observations.student_id')
-        ->orderBy('students.surname')
-        ->orderBy('students.name')
-        ->orderBy('observations.created_at');
+{
+    $search2 = $request->input('search2');
 
-        if ($request->has('search2') && !is_null($request->input('search2'))) {
-            $observationsQuery->where('courses.name', $request->input('search2'));
-        }
+    $observationsQuery = Student::select(
+        'students.id as student_id',
+        'students.name as student_name',
+        'students.surname as student_surname',
+        'courses.name as course_name',
+        'observations.id as observation_id',
+        'observations.obs as observation_obs',
+        'observations.created_at as observation_date'
+    )
+    ->leftJoin('course_student', 'students.id', '=', 'course_student.student_id')
+    ->leftJoin('courses', 'courses.id', '=', 'course_student.course_id')
+    ->leftJoin('observations', 'students.id', '=', 'observations.student_id')
+    ->orderBy('students.surname')
+    ->orderBy('students.name')
+    ->orderBy('observations.created_at');
 
-        $observations = $observationsQuery->get()->groupBy('student_id');
-
-        $pdf = Pdf::loadView('pdf.listObservationsStudents', [
-            "course" => $request->input('search2', 'Todos'),
-            "observations" => $observations
-        ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
-
-        return $pdf->download('Reporte observaciones de alumnos de ' . $request->input('search2', 'Todos') . '.pdf');
+    if ($search2 && !is_null($search2)) {
+        $observationsQuery->where('courses.name', $search2);
     }
+
+    $observations = $observationsQuery->get()->groupBy('student_id');
+
+    $courseName = $search2 ?: 'All Student Observation List';
+
+    $pdf = Pdf::loadView('pdf.listObservationsStudents', [
+        "course" => $courseName,
+        "search2" => $search2,
+        "observations" => $observations
+    ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
+
+    return $pdf->download('Reporte observaciones de alumnos de ' . $courseName . '.pdf');
+    }
+
+    
+
 
     public function reportAlumns(Request $request)
     {
@@ -85,7 +93,8 @@ class ReportController extends Controller
         
         $student = Student::with(['observation', 'assistance' => function($query) {
             $query->orderBy('date', 'desc');
-        }])->findOrFail($studentId);
+        }, 'subject'])
+        ->findOrFail($studentId);
 
         $assistancesStats = Assistance::where('student_id', $studentId)
             ->selectRaw('SUM(attended = 1) as attended_count, SUM(attended = 0) as not_attended_count')
@@ -96,7 +105,12 @@ class ReportController extends Controller
         
         $total = $yes + $no;
         $porc = $total > 0 ? ($yes / $total) * 100 : 0;
-        
+
+        // Obtener el nombre de la materia asignada al estudiante
+        $subjectNames = $student->subject->pluck('name')->implode(', ');
+
+        $subjectName = !empty($subjectNames) ? $subjectNames : 'Sin Materias Asignadas'; 
+
         $pdf = Pdf::loadView('pdf.student', [
             "student" => $student,
             "observations" => $student->observation,
@@ -106,7 +120,8 @@ class ReportController extends Controller
             "porc" => $porc,
         ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
         
-        return $pdf->download('Reporte de '.$student->name.' '.$student->last_name.'.pdf');
+        return $pdf->download('Reporte de '.$student->surname.' '.$student->name.' '.$subjectName.'.pdf');
+
     }
 
 }

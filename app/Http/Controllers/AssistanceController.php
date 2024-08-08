@@ -1,11 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use Carbon\Carbon;
 use App\Models\Assistance;
 use App\Models\Student;
-
-
 use Illuminate\Http\Request;
 
 class AssistanceController extends Controller
@@ -45,33 +42,53 @@ class AssistanceController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->assistance);
-
-         // Valido los datos del formulario
+        // Validar la solicitud
         $request->validate([
-            'assistance' => 'required|array|min:1',
-            'assistance.*' => 'required|string'
+            'assistance' => 'required|array',
+            'assistance.*' => 'required|array',
         ], [
             'assistance.required' => 'Debe enviar al menos una asistencia.',
-            'assistance.min' => 'Debe enviar al menos una asistencia.',
-        ]);    
-
-        //Cuento el total de asistencias enviadas
-        $totalAssistances = count($request->assistance); 
-        foreach ($request->assistance as $studentsAssitances) {
-            
-            list($studentId,$assistanceValue) = explode('-',$studentsAssitances);
-            
-            $assistance = new Assistance();
-            $assistance->date=now();
-            $assistance->student_id = $studentId;
-            $assistance->attended = $assistanceValue; 
-            $assistance->save();
+        ]);
+    
+        // Contador para el total de asistencias enviadas
+        $totalAssistances = 0;
+    
+        // Comprobar los campos de búsqueda
+        $search = $request->input('search');
+        $search2 = $request->input('search2');
+    
+        // Iterar sobre cada asistencia enviada
+        foreach ($request->assistance as $studentId => $courses) {
+            foreach ($courses as $courseId => $assistanceValue) {
+                // Si se usa search2 o no se está buscando por search, enviar todos los valores
+                if ($search2 || !$search) {
+                    $assistance = new Assistance();
+                    $assistance->date = now(); 
+                    $assistance->student_id = $studentId;
+                    $assistance->course_id = $courseId;
+                    $assistance->attended = $assistanceValue; // Asignar el valor de asistencia correcto
+                    $assistance->save();
+    
+                    // Incrementar el contador de asistencias válidas
+                    $totalAssistances++;
+                } elseif ($search && $assistanceValue == 1) {
+                    // Si se usa search y la asistencia es 1, enviar solo los valores tildados
+                    $assistance = new Assistance();
+                    $assistance->date = now(); 
+                    $assistance->student_id = $studentId;
+                    $assistance->course_id = $courseId;
+                    $assistance->attended = $assistanceValue; // Asignar el valor de asistencia correcto
+                    $assistance->save();
+    
+                    // Incrementar el contador de asistencias válidas
+                    $totalAssistances++;
+                }
+            }
         }
-        
+    
+        // Redireccionar al índice de asistencias con un mensaje de éxito
         return redirect()->route('assistances.index')->with('success', 'Total de asistencias enviadas correctamente: ' . $totalAssistances);
     }
-
     
     public function show (Request $request)
     {
@@ -81,10 +98,13 @@ class AssistanceController extends Controller
     {
         //Recupero las asistencias del estudiante por su ID
         $student = Student::find($studentId);
+        // Recupero los cursos y materias del estudiante
+        $courses = $student->course;  
+        $subjects = $student->subject;  // Para la relación muchos a muchos
         $assistances = Assistance::where('student_id', $studentId)
         ->orderBy('date', 'desc') 
         ->get();
-        return view('assistances.edit', compact('student', 'assistances'));
+        return view('assistances.edit', compact('student', 'assistances','courses','subjects'));
     }
 
     public function update(Request $request, $studentId)

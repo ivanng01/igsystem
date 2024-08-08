@@ -97,11 +97,11 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td class="border px-4 py-2 text-gray-900 text-center" colspan="5">No se encontraron resultados.</td>
+                                    <td class="border px-4 py-2 text-gray-900 text-center" colspan="5">No results found.</td>
                                 </tr>
                             @endif
                         @else
-                            <p>No se ha realizado ninguna búsqueda.</p>
+                            <p>No search performed.</p>
                         @endif
                     </tbody>
                 </table>

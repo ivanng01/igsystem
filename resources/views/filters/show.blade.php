@@ -8,6 +8,12 @@
     <div class="py-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-0">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 lg:p-8">
+
+            <strong>{{$student->surname}} {{$student->name}} & </strong>
+                        @foreach($subjects as $subject)
+                        <strong>{{$subject->name}}</strong>
+                        @endforeach  
+
             <form action="{{ route('reports.reportAlumns') }}" method="post">
                 @csrf
                 <input type="hidden" value="{{$student->id}}" name="id" id="id">
@@ -17,6 +23,9 @@
                     </button>
                 </div>
             </form>
+            
+             
+
             <table class="table-auto w-full">
                         <thead>
                             <tr>
@@ -26,7 +35,7 @@
                         </thead>
                         <tbody>
 
-                        <strong>Student: {{$student->surname}} {{$student->name}}</strong>
+                        
                         @foreach($assistances as $assistance)
                             <tr>         
                                 <td class="border px-4 py-2 text-gray-900 text-center">{{ \Carbon\Carbon::parse($assistance->date)->translatedFormat('l, d F Y H:i') }}</td>

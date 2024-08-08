@@ -70,18 +70,14 @@ class StudentController extends Controller
         
         // Relaciono el estudiante con los cursos seleccionados
         if ($request->has('select_course')) {
-            //$student->subject()->attach($request->input('select_subject'));
             $student->course()->attach($request->input('select_course'));
         }
 
         // Relaciono el estudiante con las materias seleccionadas
         if ($request->has('select_subject')) {
-            //$student->subject()->attach($request->input('select_subject'));
             $student->subject()->attach($request->input('select_subject'));
         }
 
-        //return redirect()->route('students.index');
-        
         return redirect()->route('students.create')->with('success', 'Alumno creado correctamente.');
     }
 
@@ -103,7 +99,6 @@ class StudentController extends Controller
     public function edit(string $id)
     {
         $student = Student::findOrFail($id);
-        //$subject = Subject::all();        
         $course=Course::all();
         $subject=Subject::all();
         return view('students.edit', compact('student','course','subject'));   

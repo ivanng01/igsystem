@@ -13,12 +13,20 @@ class Assistance extends Model
         'date',
         'student_id',
         'attended',   //verifico si "asistio" o no.
+        'course_id'
     ];
 
-    //relacion muchos a muchos con estudiantes
+    // Relación muchos a muchos con estudiantes OK
     public function student()
     {
-        return $this->belongsToMany(Student::class); 
-        
+          return $this->belongsTo(Student::class);
+    }
+
+    
+    
+    // Relación muchos a muchos con cursos
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
     }        
 }

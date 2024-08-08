@@ -16,9 +16,15 @@
                 @endif
 
                 <label for="assistances" class="block mb-2 text-lg font-medium text-gray-900">
-                {{ $student->surname }} {{ $student->name }}</label>
+                {{ $student->surname }} {{ $student->name }}
+                @if ($subjects->isNotEmpty())
+                    -
+                    @foreach ($subjects as $subject)
+                        {{ $subject->name }}@if (!$loop->last), @endif
+                    @endforeach
+                @endif
+                </label>
                 <br>
-                
                 
                 <form method="POST" action="{{ route('assistances.update', $student->id) }}">
                 @csrf

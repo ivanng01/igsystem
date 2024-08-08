@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Models\Student;
 use App\Models\Assistance;
-use App\Models\Observation;
 use Illuminate\Http\Request;
 
 class FilterController extends Controller
@@ -57,24 +56,20 @@ class FilterController extends Controller
 
     public function show(string $id)
     {
-        $student = Student::findOrFail($id);
-        $observations=Observation::where('student_id', $id)
-                    ->get();
-        $assistances = Assistance::where('student_id', $id)
-                    ->orderBy('date', 'desc')
-                    ->get();
-        //Cuento las asistencias
-        $yes = Assistance::where('student_id', $student->id)
-                    ->where('attended', 1)
-                    ->count();
-        //Cuento las inasistencias
-        $no = Assistance::where('student_id', $student->id)
-                    ->where('attended', 0)
-                    ->count();
+        $student = Student::with(['subject', 'observation', 'assistance'])->findOrFail($id);
+
+        $subjects = $student->subject;
+        $observations = $student->observation;
+        $assistances = $student->assistance->sortByDesc('date');
+        
+        // Cuento las asistencias
+        $yes = $assistances->where('attended', 1)->count();
+        // Cuento las inasistencias
+        $no = $assistances->where('attended', 0)->count();
         
         $total = $yes + $no;
         $porc = $total > 0 ? ($yes / $total) * 100 : 0;
-        return view('filters.show', compact('student','observations','assistances','yes','no','porc'));   
-    
+
+        return view('filters.show', compact('student', 'subjects', 'observations', 'assistances', 'yes', 'no', 'porc'));
     }
 }
