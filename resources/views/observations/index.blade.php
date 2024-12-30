@@ -14,23 +14,23 @@
                         {{ session('success') }}
                     </div>
                 @endif
+                <div class="flex justify-between items-center mb-6 space-x-2">
+                    <form action="{{ route('observations.index') }}" method="get">
+                        @csrf
+                        <x-custom-button></x-custom-button>
+                    </form>
 
-                <form action="{{ route('observations.index') }}" method="get">
-                    @csrf
-                    <x-custom-button></x-custom-button>
-                </form>
-
-                <form action="{{ route('reports.reportObservations') }}" id="formPDF" method="post">
-                    @csrf
-                    <input type="hidden" id="searchPdf" name="search">
-                    <input type="hidden" id="search2Pdf" name="search2">
-                    <div class="w-100 text-end">
-                        <button class="text-black bg-gray-400 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-2.5 text-end" type="button" onclick="SubmitForm('formPDF');">
-                            <i class="bi bi-file-earmark-pdf"></i> Generate PDF
-                        </button>
-                    </div>
-                </form>
-
+                    <form action="{{ route('reports.reportObservations') }}" id="formPDF" method="post">
+                        @csrf
+                        <input type="hidden" id="searchPdf" name="search">
+                        <input type="hidden" id="search2Pdf" name="search2">
+                        <div class="w-100 text-end">
+                            <button class="text-black bg-gray-400 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-2.5 text-end" type="button" onclick="SubmitForm('formPDF');">
+                                <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+                            </button>
+                        </div>
+                    </form>
+                </div>
                 <table class="table-auto w-full">
                     <thead>
                         <tr>

@@ -48,5 +48,6 @@ Route::middleware([
     Route::post('reportAsistances',[ReportController::class, 'reportAsistances'])->name('reports.reportAsistances');
     Route::post('reportObservations',[ReportController::class, 'reportObservations'])->name('reports.reportObservations');
     Route::post('reportAlumns',[ReportController::class, 'reportAlumns'])->name('reports.reportAlumns');
+    Route::post('reportListStudents',[ReportController::class, 'reportListStudents'])->name('reports.reportListStudents');
 
 });

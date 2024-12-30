@@ -30,7 +30,6 @@
         .page-break {
             page-break-after: always;
         }
-        /* Puedes agregar un poco de padding o margin si quieres más espacio alrededor del logo */
     </style>
 
     <div class="py-4">
@@ -56,34 +55,34 @@
                             <th class="px-4 py-2 text-gray-900 text-center">Observations</th>
                         </tr>
                     </thead>
+                    
+                    
+
                     <tbody>
-                        @foreach($observations as $student_id => $studentObservations)
-                            @if($studentObservations->isNotEmpty())
-                                @php $firstObservation = true; @endphp
-                                @foreach($studentObservations as $observation)
-                                    <tr>
-                                        @if($firstObservation)
-                                            <td class="border px-4 py-2 text-gray-900 text-center" rowspan="{{ $studentObservations->count() }}">
-                                                {{ $studentObservations->first()->student_surname }} {{ $studentObservations->first()->student_name }}
-                                            </td>
-                                            <td class="border px-4 py-2 text-gray-900 text-center" rowspan="{{ $studentObservations->count() }}">
-                                                {{ $studentObservations->first()->course_name }}
-                                            </td>
-                                            @php $firstObservation = false; @endphp
-                                        @endif
-                                        <td class="border px-4 py-2 text-gray-900 text-center">{{ $observation->observation_date }}</td>
-                                        <td class="border px-4 py-2 text-gray-900 text-center">{{ $observation->observation_obs }}</td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $studentObservations->first()->student_surname }} {{ $studentObservations->first()->student_name }}</td>
-                                    <td class="border px-4 py-2 text-gray-900 text-center">{{ $studentObservations->first()->course_name }}</td>
-                                    <td class="border px-4 py-2 text-gray-900 text-center" colspan="2">No observations.</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
+    @foreach($observations as $student_id => $studentObservations)
+        @foreach($studentObservations as $observation)
+            <tr>
+                <td class="border px-4 py-2 text-gray-900 text-center">
+                    {{ $observation->student_surname }} {{ $observation->student_name }}
+                </td>
+                <td class="border px-4 py-2 text-gray-900 text-center">
+                    {{ $observation->course_name }}
+                </td>
+                <td class="border px-4 py-2 text-gray-900 text-center">{{ $observation->observation_date }}</td>
+                <td class="border px-4 py-2 text-gray-900 text-center">{{ $observation->observation_obs }}</td>
+            </tr>
+        @endforeach
+        @if($studentObservations->isEmpty())
+            <tr>
+                <td class="border px-4 py-2 text-gray-900 text-center">{{ $studentObservations->first()->student_surname }} {{ $studentObservations->first()->student_name }}</td>
+                <td class="border px-4 py-2 text-gray-900 text-center">{{ $studentObservations->first()->course_name }}</td>
+                <td class="border px-4 py-2 text-gray-900 text-center" colspan="2">No observations.</td>
+            </tr>
+        @endif
+    @endforeach
+</tbody>
+
+
                 </table>
             </div>
         </div>

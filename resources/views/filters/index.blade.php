@@ -8,22 +8,51 @@
     <div class="py-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-0">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 lg:p-8">
-                <form action="{{ route('filters.index') }}" method="get">
-                    @csrf
-                    <x-custom-button></x-custom-button>
-                </form>
+                <!-- Flex container for buttons -->
+                <div class="flex justify-between items-center mb-6 space-x-2">
+                    <!-- Custom Search Button -->
+                    <form action="{{ route('filters.index') }}" method="get">
+                        @csrf
 
-                <form action="{{ route('reports.reportAsistances') }}" id="formPDFAsistances" method="post">
-                    @csrf
-                    <input type="hidden" id="searchPdf" name="search">
-                    <input type="hidden" id="search2Pdf" name="search2">
-                    <div class="w-100 text-end">
-                        <button class="text-black bg-gray-400 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-2.5 text-end" type="button" onclick="SubmitForm('formPDFAsistances');">
-                            <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+                        <div>
+                            <div class="mb-2">
+                                <div class="form-group flex flex-wrap gap-2 items-center">
+                        
+                                    <input type="text" id="search2" name="search2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 px-3 py-2"
+                                    placeholder="Ingrese curso">
+                            
+                                    <div class="ml-auto">
+                                        <button class="text-black bg-gray-400 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+                                            <i class="bi bi-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <!-- Generate PDF Button -->
+                    <form action="{{ route('reports.reportAsistances') }}" id="formPDFAsistances" method="post">
+                        @csrf
+                        <input type="hidden" id="searchPdf" name="search"> 
+                        <input type="hidden" id="search2Pdf" name="search2">
+                        <button class="text-black bg-gray-400 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-2.5" type="button" onclick="SubmitForm('formPDFAsistances');">
+                            <i class="bi bi-file-earmark-pdf"></i> Generate Assistance PDF
                         </button>
-                    </div>
-                </form>
+                    </form>
 
+                    <!-- Generate List Students PDF Button -->
+                    <form action="{{ route('reports.reportListStudents') }}" id="formPDFListStudents" method="post">
+                        @csrf
+                        <input type="hidden" id="searchPdfListStudents" name="search">
+                        <input type="hidden" id="search2PdfListStudents" name="search2">
+                        <button class="text-black bg-gray-400 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-4 py-2.5" type="button" onclick="SubmitForm('formPDFListStudents');">
+                            <i class="bi bi-file-earmark-pdf"></i> Generate List Students PDF
+                        </button>
+                    </form>
+                </div> 
+                
                 <table class="table-auto w-full">
                     <thead>
                         <tr>
@@ -107,9 +136,9 @@
 
 <script>
     function SubmitForm(form) {
-        document.getElementById('searchPdf').value = document.getElementById('search').value;
         document.getElementById('search2Pdf').value = document.getElementById('search2').value;
-        document.getElementById(form).submit();
+        document.getElementById('search2PdfListStudents').value = document.getElementById('search2').value;
+        document.getElementById(form).submit(); 
     }
 </script>
 

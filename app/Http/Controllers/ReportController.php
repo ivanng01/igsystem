@@ -67,13 +67,16 @@ class ReportController extends Controller
     ->orderBy('students.name')
     ->orderBy('observations.created_at');
 
-    if ($search2 && !is_null($search2)) {
+    if (!empty($search2)) {
         $observationsQuery->where('courses.name', $search2);
     }
 
     $observations = $observationsQuery->get()->groupBy('student_id');
 
     $courseName = $search2 ?: 'All Student Observation List';
+
+    // Eliminar caracteres no válidos para nombres de archivos
+    $courseName = preg_replace('/[^A-Za-z0-9 _\-]/', '', $courseName);
 
     $pdf = Pdf::loadView('pdf.listObservationsStudents', [
         "course" => $courseName,
@@ -82,9 +85,7 @@ class ReportController extends Controller
     ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
 
     return $pdf->download('Reporte observaciones de alumnos de ' . $courseName . '.pdf');
-    }
-
-    
+}
 
 
     public function reportAlumns(Request $request)
@@ -121,7 +122,37 @@ class ReportController extends Controller
         ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
         
         return $pdf->download('Reporte de '.$student->surname.' '.$student->name.' '.$subjectName.'.pdf');
-
     }
+
+    public function reportListStudents(Request $request)
+    {
+    $studentsQuery = Student::select(
+        'students.id as student_id',
+        'students.name as student_name',
+        'students.surname as student_surname',
+        'courses.id as course_id',
+        'courses.name as course_name'
+    )
+    ->join('course_student', 'students.id', '=', 'course_student.student_id')
+    ->join('courses', 'courses.id', '=', 'course_student.course_id')
+    ->where('students.status', 1)
+    ->groupBy('students.id', 'students.name', 'students.surname', 'courses.id', 'courses.name')
+    ->orderBy('course_student.course_id');
+
+
+    if ($request->has('search2') && !is_null($request->input('search2'))) {
+        $studentsQuery->where('courses.name', $request->input('search2'));
+    }
+
+    $students = $studentsQuery->get();
+
+    $pdf = Pdf::loadView('pdf.listStudentsCourse', [
+        "course" => $request->input('search2', 'Todos'),
+        "students" => $students
+    ])->setPaper('a4', 'landscape')->setOption('defaultFont', 'sans-serif');
+    
+    return $pdf->download('Reporte de alumnos de '.$request->input('search2', 'Todos').'.pdf');
+    }
+
 
 }
