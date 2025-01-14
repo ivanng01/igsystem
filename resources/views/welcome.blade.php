@@ -52,7 +52,7 @@
         </div> 
 
         <footer>
-            <p>&copy; 2024 IGS. All rights reserved.</p>
+            <p>&copy; 2025 IGS. All rights reserved.</p>
         </footer>
     </body>
 </html>
